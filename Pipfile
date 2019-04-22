@@ -5,6 +5,9 @@ verify_ssl = true
 
 [dev-packages]
 django-debug-toolbar = "*"
+selenium = "*"
+sqlparse = "*"
+coverage = "*"
 
 [packages]
 django = "==1.9.9"
