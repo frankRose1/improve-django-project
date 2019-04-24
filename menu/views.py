@@ -3,23 +3,25 @@ from django.http import Http404
 from django.utils import timezone
 from operator import attrgetter
 from datetime import datetime
+from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from .models import *
 from .forms import *
 
 def menu_list(request):
-    all_menus = Menu.objects.all()
-    menus = []
-    for menu in all_menus:
-        if menu.expiration_date is not None:
-            if menu.expiration_date >= timezone.now():
-                menus.append(menu)
-
+    menus = Menu.objects.filter(expiration_date__lte=timezone.now())
+    
+    # menus = []
+    # for menu in all_menus:
+    #     if menu.expiration_date is not None:
+    #         if menu.expiration_date >= timezone.now():
+    #             menus.append(menu)
     menus = sorted(menus, key=attrgetter('expiration_date'))
+
     return render(request, 'menu/list_all_current_menus.html', {'menus': menus})
 
 def menu_detail(request, pk):
-    menu = Menu.objects.get(pk=pk)
+    menu = get_object_or_404(Menu, pk=pk)
     return render(request, 'menu/menu_detail.html', {'menu': menu})
 
 def item_detail(request, pk):
