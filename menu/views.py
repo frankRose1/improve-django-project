@@ -10,7 +10,7 @@ from . import models
 from . import forms
 
 def menu_list(request):
-    menus = models.Menu.objects.filter(expiration_date__lte=timezone.now())
+    menus = models.Menu.objects.filter(expiration_date__gte=timezone.now())
     
     # menus = []
     # for menu in all_menus:
@@ -19,7 +19,7 @@ def menu_list(request):
     #             menus.append(menu)
     menus = sorted(menus, key=attrgetter('expiration_date'))
 
-    return render(request, 'menu/list_all_current_menus.html', {'menus': menus})
+    return render(request, 'menu/list_current_menus.html', {'menus': menus})
 
 def menu_detail(request, pk):
     menu = get_object_or_404(models.Menu, pk=pk)
