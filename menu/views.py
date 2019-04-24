@@ -1,15 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.utils import timezone
 from operator import attrgetter
 from datetime import datetime
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from .models import *
-from .forms import *
+from . import models
+from . import forms
 
 def menu_list(request):
-    menus = Menu.objects.filter(expiration_date__lte=timezone.now())
+    menus = models.Menu.objects.filter(expiration_date__lte=timezone.now())
     
     # menus = []
     # for menu in all_menus:
@@ -21,28 +22,25 @@ def menu_list(request):
     return render(request, 'menu/list_all_current_menus.html', {'menus': menus})
 
 def menu_detail(request, pk):
-    menu = get_object_or_404(Menu, pk=pk)
+    menu = get_object_or_404(models.Menu, pk=pk)
     return render(request, 'menu/menu_detail.html', {'menu': menu})
 
 def item_detail(request, pk):
-    try: 
-        item = Item.objects.get(pk=pk)
-    except ObjectDoesNotExist:
-        raise Http404
-    return render(request, 'menu/detail_item.html', {'item': item})
+    item = get_object_or_404(models.Item, pk=pk)
+    return render(request, 'menu/item_detail.html', {'item': item})
 
+@login_required
 def create_new_menu(request):
+    form = forms.MenuForm()
     if request.method == "POST":
-        form = MenuForm(request.POST)
+        form = forms.MenuForm(request.POST)
         if form.is_valid():
-            menu = form.save(commit=False)
-            menu.created_date = timezone.now()
-            menu.save()
-            return redirect('menu_detail', pk=menu.pk)
-    else:
-        form = MenuForm()
-    return render(request, 'menu/menu_edit.html', {'form': form})
+            menu = form.save()
+            return redirect(menu.get_absolute_url())
 
+    return render(request, 'menu/new_menu.html', {'form': form})
+
+@login_required
 def edit_menu(request, pk):
     menu = get_object_or_404(Menu, pk=pk)
     items = Item.objects.all()

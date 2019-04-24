@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.core.urlresolvers import reverse
 
 
 class Menu(models.Model):
@@ -12,6 +13,10 @@ class Menu(models.Model):
 
     def __str__(self):
         return self.season
+
+    def get_absolute_url(self):
+        return reverse('menu:detail', kwargs={'pk': self.id})
+
 
 class Item(models.Model):
     name = models.CharField(max_length=200)
