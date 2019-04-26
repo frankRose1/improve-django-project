@@ -2,7 +2,7 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import timezone
-from .models import Menu
+from .models import Menu, Item
 
 
 class MenuModelTest(TestCase):
@@ -38,3 +38,18 @@ class MenuViewsTests(TestCase):
         res = self.client.get(reverse('menu:detail', kwargs={'pk': self.menu.id}))
         self.assertEqual(res.status_code, 200)
         self.assertEqual(self.menu, res.context['menu'])
+
+
+class ItemViewsTests(TestCase):
+
+    def setUp(self):
+        self.item = Item.objects.create(
+            name='New Menu Item',
+            standard=True
+        )
+
+    def test_item_detail(self):
+        res = self.client.get(reverse('menu:item_detail', kwargs={'pk': self.item.id}))
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(self.item, res.context['item'])
+        self.assertTemplateUsed(res, 'menu/item_detail.html')
