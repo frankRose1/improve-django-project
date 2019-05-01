@@ -1,10 +1,13 @@
 from django.conf.urls import url
+from django.urls import path
 from . import views
 
+app_name = 'menu'
+
 urlpatterns = [
-    url(r'^$', views.menu_list, name='list'),
-    url(r'^menu/(?P<pk>\d+)/edit/$', views.edit_menu, name='edit'),
-    url(r'^menu/(?P<pk>\d+)/$', views.menu_detail, name='detail'),
-    url(r'^menu/item/(?P<pk>\d+)/$', views.item_detail, name='item_detail'),
-    url(r'^menu/new/$', views.create_new_menu, name='new'),
+    path('', views.menu_list, name='list'),
+    path('menu/<int:pk>/edit/', views.edit_menu, name='edit'),
+    path('menu/<int:pk>/', views.menu_detail, name='detail'),
+    path('menu/item/<int:pk>/', views.item_detail, name='item_detail'),
+    path('menu/new/', views.create_new_menu, name='new'),
 ]

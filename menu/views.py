@@ -10,13 +10,7 @@ from . import models
 from . import forms
 
 def menu_list(request):
-    menus = models.Menu.objects.filter(expiration_date__gte=timezone.now())
-    
-    # menus = []
-    # for menu in all_menus:
-    #     if menu.expiration_date is not None:
-    #         if menu.expiration_date >= timezone.now():
-    #             menus.append(menu)
+    menus = models.Menu.objects.filter(expiration_date__lte=timezone.now())
     menus = sorted(menus, key=attrgetter('expiration_date'))
 
     return render(request, 'menu/list_current_menus.html', {'menus': menus})
@@ -29,7 +23,6 @@ def item_detail(request, pk):
     item = get_object_or_404(models.Item, pk=pk)
     return render(request, 'menu/item_detail.html', {'item': item})
 
-@login_required
 def create_new_menu(request):
     form = forms.MenuForm()
     if request.method == "POST":
@@ -40,7 +33,6 @@ def create_new_menu(request):
 
     return render(request, 'menu/new_menu.html', {'form': form})
 
-@login_required
 def edit_menu(request, pk):
     menu = get_object_or_404(Menu, pk=pk)
     items = Item.objects.all()
