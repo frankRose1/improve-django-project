@@ -20,7 +20,7 @@ class Menu(models.Model):
 
 class Item(models.Model):
     name = models.CharField(max_length=200)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     chef = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     created_date = models.DateTimeField(
             default=timezone.now)

@@ -23,7 +23,6 @@ def item_detail(request, pk):
     item = get_object_or_404(models.Item, pk=pk)
     return render(request, 'menu/item_detail.html', {'item': item})
 
-# TODO set the chef key to the logged in user
 def new_menu(request):
     form = forms.MenuForm()
     if request.method == "POST":
@@ -49,3 +48,8 @@ def edit_menu(request, pk):
         # menu.save()
 
     return render(request, 'menu/menu_form.html', { 'form': form })
+
+
+def item_list(request):
+    items = models.Item.objects.all()
+    return render(request, 'menu/item_list.html', {'items': items})
