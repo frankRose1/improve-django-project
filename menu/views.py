@@ -23,7 +23,8 @@ def item_detail(request, pk):
     item = get_object_or_404(models.Item, pk=pk)
     return render(request, 'menu/item_detail.html', {'item': item})
 
-def create_new_menu(request):
+# TODO set the chef key to the logged in user
+def new_menu(request):
     form = forms.MenuForm()
     if request.method == "POST":
         form = forms.MenuForm(request.POST)
@@ -31,18 +32,20 @@ def create_new_menu(request):
             menu = form.save()
             return redirect(menu.get_absolute_url())
 
-    return render(request, 'menu/new_menu.html', {'form': form})
+    return render(request, 'menu/menu_form.html', {'form': form})
 
 def edit_menu(request, pk):
-    menu = get_object_or_404(Menu, pk=pk)
-    items = Item.objects.all()
+    menu = get_object_or_404(models.Menu, pk=pk)
+    form = forms.MenuForm(instance=menu)
     if request.method == "POST":
-        menu.season = request.POST.get('season', '')
-        menu.expiration_date = datetime.strptime(request.POST.get('expiration_date', ''), '%m/%d/%Y')
-        menu.items = request.POST.get('items', '')
-        menu.save()
+        form = forms.MenuForm(request.POST, instance=menu)
+        if form.is_valid():
+            form.save()
+            return redirect(menu.get_absolute_url())
 
-    return render(request, 'menu/change_menu.html', {
-        'menu': menu,
-        'items': items,
-        })
+        # menu.season = request.POST.get('season', '')
+        # menu.expiration_date = datetime.strptime(request.POST.get('expiration_date', ''), '%m/%d/%Y')
+        # menu.items = request.POST.get('items', '')
+        # menu.save()
+
+    return render(request, 'menu/menu_form.html', { 'form': form })

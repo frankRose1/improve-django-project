@@ -2,7 +2,7 @@
 
 
 {% block content %}
-<h1>New Menu</h1>
+<h1>{{ form.instance.season|default:"New Menu" }}</h1>
 <form method="POST" class="menu-form">
     {% csrf_token %}
     {{ form.as_p }}

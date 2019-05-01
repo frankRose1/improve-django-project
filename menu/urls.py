@@ -9,5 +9,5 @@ urlpatterns = [
     path('menu/<int:pk>/edit/', views.edit_menu, name='edit'),
     path('menu/<int:pk>/', views.menu_detail, name='detail'),
     path('menu/item/<int:pk>/', views.item_detail, name='item_detail'),
-    path('menu/new/', views.create_new_menu, name='new'),
+    path('menu/new/', views.new_menu, name='new'),
 ]
