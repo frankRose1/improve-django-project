@@ -39,7 +39,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'django_nose',
     'menu',
+]
+
+# use nose to run al tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# tell nose to use coverage and which apps to test
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=menu',
 ]
 
 MIDDLEWARE = [

@@ -8,6 +8,13 @@ The goal is to take a messy, buggy, badly tested Python code base and improve it
 * model fields were improved to be the appropriate type
 * model form has been improved with widgets
 
+## Tests
+- ```django-nose``` is used to run tests and track coverage
+- run ```python manage.py test``` to run tests
+- tests currently cover 68%
+
 ## Technologies used
 - django
 - django-debug-toolbar
+- django-nose
+- coverage

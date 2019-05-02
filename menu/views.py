@@ -42,12 +42,12 @@ def edit_menu(request, pk):
     except ObjectDoesNotExist:
         raise Http404
     else:
-    form = forms.MenuForm(instance=menu)
-    if request.method == "POST":
-        form = forms.MenuForm(request.POST, instance=menu)
-        if form.is_valid():
-            form.save()
-            return redirect(menu.get_absolute_url())
+        form = forms.MenuForm(instance=menu)
+        if request.method == "POST":
+            form = forms.MenuForm(request.POST, instance=menu)
+            if form.is_valid():
+                form.save()
+                return redirect(menu.get_absolute_url())
 
     return render(request, 'menu/menu_form.html', { 'form': form })
 

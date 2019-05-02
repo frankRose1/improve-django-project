@@ -21,6 +21,7 @@ class MenuModelTests(TestCase):
         url = self.menu.get_absolute_url()
         self.assertEqual(f'/menu/{self.menu.id}/', url)
 
+
 class ItemModelTests(TestCase):
     def test_item_creation(self):
         chef = User.objects.create_user(
@@ -50,11 +51,6 @@ class IngredientModelTests(TestCase):
 class MenuViewsTests(TestCase):
     
     def setUp(self):
-        # self.chef = User.objects.create_user(
-        #     username='gordon.ramsay',
-        #     email='gordon.ramsay@gmail.com',
-        #     password='top_secret_pw'         
-        # )
         self.menu = Menu.objects.create(
             season='winter',
             expiration_date=timezone.make_aware(datetime.strptime('12/25/2020 18', '%m/%d/%Y %H'))
@@ -63,12 +59,6 @@ class MenuViewsTests(TestCase):
             season='summer',
             expiration_date=timezone.make_aware(datetime.strptime('08/15/2020 10', '%m/%d/%Y %H'))
         )
-        # self.item = Item.objects.create(
-        #     title='Testing Item',
-        #     chef=self.chef,
-        #     description='Lorem ipsum lorem ipsum lorem ipsum loprem',
-        #     standard=True
-        # )
 
     
     def test_menu_detail_view(self):
@@ -84,6 +74,10 @@ class MenuViewsTests(TestCase):
         self.assertEqual(self.menu, res.context['menu'])
         self.assertTemplateUsed(res, 'menu/menu_detail.html')
 
+    def test_menu_detail_404(self):
+        res = self.client.get(reverse('menu:detail', kwargs={'pk': 700}))
+        self.assertEqual(res.status_code, 404)
+
     def test_get_new_menu_view(self):
         res = self.client.get(reverse('menu:new'))
         self.assertEqual(res.status_code, 200)
@@ -94,19 +88,6 @@ class MenuViewsTests(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.context['form'].instance, self.menu)
         self.assertTemplateUsed('menu/menu_form.html')
-
-    # TODO --> test may be failing because date is not properly formatted and form is not submitting
-    # def test_post_new_menu_view(self):
-    #     data = {
-    #         'season': 'Posting A New Menu',
-    #         'expiration_date_year': 2021,
-    #         'expiration_date_month': 10,
-    #         'expiration_date_day': 15,
-    #         # 'items': [1, 4, 6], 
-    #     }
-    #     res = self.client.post(reverse('menu:new'), data=data)
-    #     self.assertRedirects(res, '/menu/4', status_code=302, target_status_code=200)
-    #     self.assertTemplateUsed(res, 'menu/menu_detail.html')
 
 
 class MenuFormTests(TestCase):
@@ -166,6 +147,10 @@ class ItemViewsTests(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(self.item, res.context['item'])
         self.assertTemplateUsed(res, 'menu/item_detail.html')
+    
+    def test_item_detail_404(self):
+        res = self.client.get(reverse('menu:item_detail', kwargs={'pk': 50000}))
+        self.assertEqual(res.status_code, 404)
 
     def test_item_list_view(self):
         res = self.client.get(reverse('menu:item_list'))
