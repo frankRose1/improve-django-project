@@ -4,13 +4,12 @@ from django.http import Http404
 from django.utils import timezone
 from operator import attrgetter
 from datetime import datetime
-from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from . import models
 from . import forms
 
 def menu_list(request):
-    menus = models.Menu.objects.filter(expiration_date__lte=timezone.now())
+    menus = models.Menu.objects.prefetch_related('items').filter(expiration_date__gte=timezone.now())
     menus = sorted(menus, key=attrgetter('expiration_date'))
 
     return render(request, 'menu/list_current_menus.html', {'menus': menus})
@@ -20,8 +19,12 @@ def menu_detail(request, pk):
     return render(request, 'menu/menu_detail.html', {'menu': menu})
 
 def item_detail(request, pk):
-    item = get_object_or_404(models.Item, pk=pk)
-    return render(request, 'menu/item_detail.html', {'item': item})
+    try:
+        item = models.Item.objects.select_related('chef').get(pk=pk)
+    except ObjectDoesNotExist:
+        raise Http404
+    else:
+        return render(request, 'menu/item_detail.html', {'item': item})
 
 def new_menu(request):
     form = forms.MenuForm()
@@ -34,18 +37,17 @@ def new_menu(request):
     return render(request, 'menu/menu_form.html', {'form': form})
 
 def edit_menu(request, pk):
-    menu = get_object_or_404(models.Menu, pk=pk)
+    try:
+        menu = models.Menu.objects.prefetch_related('items').get(pk=pk)
+    except ObjectDoesNotExist:
+        raise Http404
+    else:
     form = forms.MenuForm(instance=menu)
     if request.method == "POST":
         form = forms.MenuForm(request.POST, instance=menu)
         if form.is_valid():
             form.save()
             return redirect(menu.get_absolute_url())
-
-        # menu.season = request.POST.get('season', '')
-        # menu.expiration_date = datetime.strptime(request.POST.get('expiration_date', ''), '%m/%d/%Y')
-        # menu.items = request.POST.get('items', '')
-        # menu.save()
 
     return render(request, 'menu/menu_form.html', { 'form': form })
 

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.widgets import SelectDateWidget, CheckboxSelectMultiple
 
-from .models import Menu, Item, Ingredient
+from .models import Menu
 
 class MenuForm(forms.ModelForm):
 
@@ -15,6 +15,7 @@ class MenuForm(forms.ModelForm):
         widgets={
             'expiration_date': SelectDateWidget(
                 empty_label=('Choose Year', 'Choose Month', 'Choose Day'),
+                years=list(range(2010, 2035))
             ),
             'items': CheckboxSelectMultiple()
         }
