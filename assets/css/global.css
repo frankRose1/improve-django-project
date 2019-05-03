@@ -1,0 +1,20 @@
+#id_items {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10;
+  max-height: 550px;
+  overflow: scroll;
+  list-style: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+}
+
+.pagination {
+  margin: 2rem auto;
+  padding: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+  max-width: 750px;
+}
+
+.current {
+  margin: 0 10px;
+}
