@@ -59,6 +59,15 @@ class MenuViewsTests(TestCase):
             season='summer',
             expiration_date=timezone.make_aware(datetime.strptime('08/15/2020 10', '%m/%d/%Y %H'))
         )
+        self.item = Item.objects.create(
+            name='Chocolate Milk',
+            standard=True,
+            chef=User.objects.create_user(
+                username='cool.chef32',
+                email='cool.chef@gmail.com',
+                password='password32'         
+            )
+        )
 
     
     def test_menu_detail_view(self):
@@ -88,6 +97,17 @@ class MenuViewsTests(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.context['form'].instance, self.menu)
         self.assertTemplateUsed('menu/menu_form.html')
+
+    def test_post_new_menu_view(self):
+        data = {
+            'season': 'Lorem Ipsum',
+            'expiration_date_month': 10,
+            'expiration_date_year': 2023,
+            'expiration_date_day': 15,
+            'items': [self.item.id]
+        }
+        res = self.client.post(reverse('menu:new'), data=data)
+        self.assertRedirects(res, '/menu/3/', status_code=302, target_status_code=200)
 
 
 class MenuFormTests(TestCase):

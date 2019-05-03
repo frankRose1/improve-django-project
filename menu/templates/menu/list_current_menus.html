@@ -18,4 +18,22 @@
         <p>{{ menu.items.all|join:", "}}</p>
     {% endfor %}
 </div>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if menus.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ menus.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ menus.number }} of {{ menus.paginator.num_pages }}.
+        </span>
+
+        {% if menus.has_next %}
+            <a href="?page={{ menus.next_page_number }}">next</a>
+            <a href="?page={{ menus.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 {% endblock %}

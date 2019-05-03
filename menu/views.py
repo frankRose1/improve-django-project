@@ -4,14 +4,16 @@ from django.http import Http404
 from django.utils import timezone
 from operator import attrgetter
 from datetime import datetime
+from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from . import models
 from . import forms
 
 def menu_list(request):
-    menus = models.Menu.objects.prefetch_related('items').filter(expiration_date__gte=timezone.now())
-    menus = sorted(menus, key=attrgetter('expiration_date'))
-
+    menu_list = models.Menu.objects.prefetch_related('items').filter(expiration_date__gte=timezone.now())
+    paginator = Paginator(menu_list, 5)
+    page = request.GET.get('page', 1)
+    menus = paginator.get_page(page)
     return render(request, 'menu/list_current_menus.html', {'menus': menus})
 
 def menu_detail(request, pk):
@@ -53,5 +55,8 @@ def edit_menu(request, pk):
 
 
 def item_list(request):
-    items = models.Item.objects.all()
+    items_list = models.Item.objects.all()
+    paginator = Paginator(items_list, 12)
+    page = request.GET.get('page', 1)
+    items = paginator.get_page(page)
     return render(request, 'menu/item_list.html', {'items': items})

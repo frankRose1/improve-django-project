@@ -7,11 +7,12 @@ The goal is to take a messy, buggy, badly tested Python code base and improve it
 * tests are written form views, models, and forms
 * model fields were improved to be the appropriate type
 * model form has been improved with widgets
+* pagination has been added for list views
 
 ## Tests
 - ```django-nose``` is used to run tests and track coverage
 - run ```python manage.py test``` to run tests
-- tests currently cover 68%
+- tests currently cover 92%
 
 ## Technologies used
 - django

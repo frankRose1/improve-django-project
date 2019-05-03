@@ -1,3 +1,5 @@
 [report]
 exclude_lines = def __str__
-omit = menu/admin.py
+omit = 
+  menu/admin.py
+  menu/models.py

@@ -10,6 +10,9 @@ class Menu(models.Model):
             default=timezone.now)
     expiration_date = models.DateTimeField(
             blank=True, null=True)
+    
+    class Meta:
+        ordering = ['expiration_date',]
 
     def __str__(self):
         return self.season
@@ -26,6 +29,9 @@ class Item(models.Model):
             default=timezone.now)
     standard = models.BooleanField(default=False)
     ingredients = models.ManyToManyField('Ingredient', related_name='ingredients')
+
+    class Meta:
+        ordering = ['created_date']
 
     def __str__(self):
         return self.name
